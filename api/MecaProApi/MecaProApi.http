@@ -1,0 +1,6 @@
+@MecaProApi_HostAddress = http://localhost:5161
+
+GET {{MecaProApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
