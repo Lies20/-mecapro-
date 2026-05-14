@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<Post> Posts => Set<Post>();
     public DbSet<PostLike> PostLikes => Set<PostLike>();
     public DbSet<PostComment> PostComments => Set<PostComment>();
+    public DbSet<Report> Reports => Set<Report>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,6 +30,21 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<PostLike>().ToTable("post_likes");
         modelBuilder.Entity<PostComment>().ToTable("post_comments");
         // Colonnes en minuscules pour User
+        modelBuilder.Entity<Report>().ToTable("reports");
+        modelBuilder.Entity<Report>(e => {
+        e.Property(r => r.Id).HasColumnName("id");
+        e.Property(r => r.ReporterId).HasColumnName("reporter_id");
+        e.Property(r => r.PostId).HasColumnName("post_id");
+        e.Property(r => r.GarageId).HasColumnName("garage_id");
+        e.Property(r => r.Reason).HasColumnName("reason");
+        e.Property(r => r.CreatedAt).HasColumnName("created_at");
+});
+
+
+
+
+
+        
 modelBuilder.Entity<User>(e => {
     e.Property(u => u.Id).HasColumnName("id");
     e.Property(u => u.FirstName).HasColumnName("first_name");

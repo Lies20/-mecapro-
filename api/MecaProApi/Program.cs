@@ -43,6 +43,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IGarageService, GarageService>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 var app = builder.Build();
 
