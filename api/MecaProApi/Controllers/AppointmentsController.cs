@@ -36,11 +36,14 @@ public class AppointmentsController : ControllerBase
         return Ok(appointments);
     }
 
+    private string GetUserRole() =>
+    User.FindFirstValue(ClaimTypes.Role) ?? "user";
+
     [HttpGet("{id}")]
     [Authorize]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var appointment = await _appointmentService.GetById(id);
+        var appointment = await _appointmentService.GetById(id, GetUserId(), GetUserRole());
         if (appointment == null) return NotFound();
         return Ok(appointment);
     }

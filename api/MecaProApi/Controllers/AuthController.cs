@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using MecaProApi.DTOs.Auth;
 using MecaProApi.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using MecaProApi.Validators;
 
 namespace MecaProApi.Controllers;
 
@@ -16,20 +19,43 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Register(RegisterDto dto)
     {
-        var result = await _authService.Register(dto);
-        if (result == null)
+        var validator = new RegisterValidator();
+        var result = validator.Validate(dto);
+        if (!result.IsValid)
+            return BadRequest(result.Errors.Select(e => e.ErrorMessage));
+
+        var response = await _authService.Register(dto);
+        if (response == null)
             return BadRequest(new { message = "Email déjà utilisé" });
-        return Ok(result);
+        return Ok(response);
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Login(LoginDto dto)
     {
-        var result = await _authService.Login(dto);
-        if (result == null)
+        var response = await _authService.Login(dto);
+        if (response == null)
             return Unauthorized(new { message = "Email ou mot de passe incorrect" });
+        return Ok(response);
+    }
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+    {
+        var result = await _authService.RefreshToken(refreshToken);
+        if (result == null)
+            return Unauthorized(new { message = "Token invalide ou expiré" });
         return Ok(result);
+    }
+
+    [HttpPost("logout")]
+    [Authorize]
+    public async Task<IActionResult> Logout([FromBody] string refreshToken)
+    {
+        await _authService.RevokeToken(refreshToken);
+        return Ok();
     }
 }

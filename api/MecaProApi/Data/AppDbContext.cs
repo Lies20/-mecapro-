@@ -18,6 +18,8 @@ public class AppDbContext : DbContext
     public DbSet<PostComment> PostComments => Set<PostComment>();
     public DbSet<Report> Reports => Set<Report>();
 
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().ToTable("users");
@@ -41,7 +43,14 @@ public class AppDbContext : DbContext
 });
 
 
-
+modelBuilder.Entity<RefreshToken>().ToTable("refresh_tokens");
+modelBuilder.Entity<RefreshToken>(e => {
+    e.Property(r => r.Id).HasColumnName("id");
+    e.Property(r => r.UserId).HasColumnName("user_id");
+    e.Property(r => r.Token).HasColumnName("token");
+    e.Property(r => r.ExpiresAt).HasColumnName("expires_at");
+    e.Property(r => r.CreatedAt).HasColumnName("created_at");
+});
 
 
         

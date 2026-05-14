@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MecaProApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b279fd40feea34a5af99c0b9b9a0e22905bda0f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9913d316817343c4b9f06cec2ddb07da9e5f6d5")]
 [assembly: System.Reflection.AssemblyProductAttribute("MecaProApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MecaProApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -49,3 +49,6 @@
 /workspaces/-mecapro-/api/MecaProApi/obj/Debug/net10.0/MecaProApi.pdb
 /workspaces/-mecapro-/api/MecaProApi/obj/Debug/net10.0/MecaProApi.genruntimeconfig.cache
 /workspaces/-mecapro-/api/MecaProApi/obj/Debug/net10.0/ref/MecaProApi.dll
+/workspaces/-mecapro-/api/MecaProApi/bin/Debug/net10.0/FluentValidation.dll
+/workspaces/-mecapro-/api/MecaProApi/bin/Debug/net10.0/FluentValidation.AspNetCore.dll
+/workspaces/-mecapro-/api/MecaProApi/bin/Debug/net10.0/FluentValidation.DependencyInjectionExtensions.dll

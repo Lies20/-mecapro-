@@ -39,15 +39,18 @@ public class AppointmentService : IAppointmentService
         return appointments.Select(ToDto).ToList();
     }
 
-    public async Task<AppointmentDto?> GetById(Guid id)
-    {
-        var appointment = await _db.Appointments
-            .Include(a => a.Garage)
-            .Include(a => a.Specialty)
-            .FirstOrDefaultAsync(a => a.Id == id);
+   public async Task<AppointmentDto?> GetById(Guid id, Guid userId, string role)
+{
+    var appointment = await _db.Appointments
+        .Include(a => a.Garage)
+        .Include(a => a.Specialty)
+        .FirstOrDefaultAsync(a => a.Id == id);
 
-        return appointment == null ? null : ToDto(appointment);
-    }
+    if (appointment == null) return null;
+    if (role != "admin" && appointment.UserId != userId) return null;
+
+    return ToDto(appointment);
+}
 
     public async Task<AppointmentDto> Create(Guid userId, CreateAppointmentDto dto)
     {
