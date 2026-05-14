@@ -32,6 +32,7 @@ public class ReportsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetAll()
     {
         var reports = await _reportService.GetAll();

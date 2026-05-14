@@ -8,7 +8,6 @@ namespace MecaProApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class AppointmentsController : ControllerBase
 {
     private readonly IAppointmentService _appointmentService;
@@ -22,6 +21,7 @@ public class AppointmentsController : ControllerBase
         Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet("my")]
+    [Authorize]
     public async Task<IActionResult> GetMyAppointments()
     {
         var appointments = await _appointmentService.GetUserAppointments(GetUserId());
@@ -29,6 +29,7 @@ public class AppointmentsController : ControllerBase
     }
 
     [HttpGet("garage/{garageId}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetGarageAppointments(Guid garageId)
     {
         var appointments = await _appointmentService.GetGarageAppointments(garageId);
@@ -36,6 +37,7 @@ public class AppointmentsController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<IActionResult> GetById(Guid id)
     {
         var appointment = await _appointmentService.GetById(id);
@@ -44,6 +46,7 @@ public class AppointmentsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create(CreateAppointmentDto dto)
     {
         var appointment = await _appointmentService.Create(GetUserId(), dto);
@@ -51,6 +54,7 @@ public class AppointmentsController : ControllerBase
     }
 
     [HttpPatch("{id}/status")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] string status)
     {
         var result = await _appointmentService.UpdateStatus(id, status);
@@ -59,6 +63,7 @@ public class AppointmentsController : ControllerBase
     }
 
     [HttpPatch("{id}/cancel")]
+    [Authorize]
     public async Task<IActionResult> Cancel(Guid id)
     {
         var result = await _appointmentService.Cancel(id, GetUserId());

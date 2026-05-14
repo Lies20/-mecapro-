@@ -55,6 +55,7 @@ modelBuilder.Entity<User>(e => {
     e.Property(u => u.VehicleType).HasColumnName("vehicle_type");
     e.Property(u => u.VehicleModel).HasColumnName("vehicle_model");
     e.Property(u => u.CreatedAt).HasColumnName("created_at");
+    e.Property(u => u.Role).HasColumnName("role");
 });
 
 modelBuilder.Entity<Garage>(e => {

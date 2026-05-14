@@ -54,12 +54,12 @@ public class PostsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Delete(Guid id)
-    {
-        var result = await _postService.Delete(id, GetUserId()!.Value);
-        if (!result) return NotFound();
-        return Ok();
+    {   
+    var result = await _postService.Delete(id, GetUserId()!.Value);
+    if (!result) return NotFound();
+    return Ok();
     }
 
     [HttpPost("{id}/like")]
