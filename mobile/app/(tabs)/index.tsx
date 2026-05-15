@@ -1,31 +1,31 @@
-import { StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Colors2 as Colors } from '../../constants/colors'
+import { useAuthStore } from '../../store/authStore'
 
-import EditScreenInfo from '../../components/EditScreenInfo';
-import { Text, View } from '../../components/Themed';
+export default function MapScreen() {
+  const { user } = useAuthStore()
 
-export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Bonjour {user?.firstName} 👋</Text>
+        <Text style={styles.title}>Trouvez un mécanicien</Text>
+      </View>
+      <View style={styles.mapPlaceholder}>
+        <Text style={styles.mapText}>🗺️</Text>
+        <Text style={styles.mapSubText}>Carte interactive</Text>
+        <Text style={styles.mapSubText}>bientôt disponible</Text>
+      </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+  container: { flex: 1, backgroundColor: Colors.background },
+  header: { padding: 20, paddingTop: 60 },
+  greeting: { fontSize: 13, color: Colors.textSecondary, marginBottom: 4 },
+  title: { fontSize: 22, fontWeight: '500', color: Colors.text },
+  mapPlaceholder: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  mapText: { fontSize: 60, marginBottom: 12 },
+  mapSubText: { fontSize: 14, color: Colors.textSecondary },
+})
