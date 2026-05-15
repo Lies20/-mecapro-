@@ -43,8 +43,8 @@ public class AppDbContext : DbContext
 });
 
 
-modelBuilder.Entity<RefreshToken>().ToTable("refresh_tokens");
-modelBuilder.Entity<RefreshToken>(e => {
+    modelBuilder.Entity<RefreshToken>().ToTable("refresh_tokens");
+    modelBuilder.Entity<RefreshToken>(e => {
     e.Property(r => r.Id).HasColumnName("id");
     e.Property(r => r.UserId).HasColumnName("user_id");
     e.Property(r => r.Token).HasColumnName("token");
@@ -65,6 +65,8 @@ modelBuilder.Entity<User>(e => {
     e.Property(u => u.VehicleModel).HasColumnName("vehicle_model");
     e.Property(u => u.CreatedAt).HasColumnName("created_at");
     e.Property(u => u.Role).HasColumnName("role");
+    e.Property(u => u.IsVerified).HasColumnName("is_verified");
+    e.Property(u => u.VerificationToken).HasColumnName("verification_token");
 });
 
 modelBuilder.Entity<Garage>(e => {

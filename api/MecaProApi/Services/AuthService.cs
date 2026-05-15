@@ -15,62 +15,73 @@ public class AuthService : IAuthService
 {
     private readonly AppDbContext _db;
     private readonly IConfiguration _config;
+    private readonly IEmailService _emailService;
 
-    public AuthService(AppDbContext db, IConfiguration config)
+  public AuthService(AppDbContext db, IConfiguration config, IEmailService emailService)
+{
+    _db = db;
+    _config = config;
+    _emailService = emailService;
+}
+
+   public async Task<AuthResponseDto?> Register(RegisterDto dto)
+{
+    if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
+        return null;
+
+    var verificationToken = Guid.NewGuid().ToString("N");
+
+    var user = new User
     {
-        _db = db;
-        _config = config;
-    }
+        FirstName = dto.FirstName,
+        LastName = dto.LastName,
+        Email = dto.Email,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+        Phone = dto.Phone,
+        VehicleType = dto.VehicleType,
+        VehicleModel = dto.VehicleModel,
+        Role = "user",
+        IsVerified = false,
+        VerificationToken = verificationToken
+    };
 
-    public async Task<AuthResponseDto?> Register(RegisterDto dto)
+    _db.Users.Add(user);
+    await _db.SaveChangesAsync();
+
+    await _emailService.SendVerificationEmail(user.Email, user.FirstName, verificationToken);
+
+    var refreshToken = await GenerateRefreshToken(user.Id);
+
+    return new AuthResponseDto
     {
-        if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
-            return null;
-
-        var user = new User
-        {
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            Email = dto.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-            Phone = dto.Phone,
-            VehicleType = dto.VehicleType,
-            VehicleModel = dto.VehicleModel,
-            Role = "user"
-        };
-
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
-
-        var refreshToken = await GenerateRefreshToken(user.Id);
-
-        return new AuthResponseDto
-        {
-            Token = GenerateJwt(user),
-            RefreshToken = refreshToken,
-            FirstName = user.FirstName,
-            Email = user.Email,
-            Role = user.Role
-        };
-    }
+        Token = GenerateJwt(user),
+        RefreshToken = refreshToken,
+        FirstName = user.FirstName,
+        Email = user.Email,
+        Role = user.Role
+    };
+}
 
     public async Task<AuthResponseDto?> Login(LoginDto dto)
+{
+    var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+    if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+        return null;
+
+    if (!user.IsVerified)
+        return null;
+
+    var refreshToken = await GenerateRefreshToken(user.Id);
+
+    return new AuthResponseDto
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            return null;
-
-        var refreshToken = await GenerateRefreshToken(user.Id);
-
-        return new AuthResponseDto
-        {
-            Token = GenerateJwt(user),
-            RefreshToken = refreshToken,
-            FirstName = user.FirstName,
-            Email = user.Email,
-            Role = user.Role
-        };
-    }
+        Token = GenerateJwt(user),
+        RefreshToken = refreshToken,
+        FirstName = user.FirstName,
+        Email = user.Email,
+        Role = user.Role
+    };
+}
 
     public async Task<AuthResponseDto?> RefreshToken(string refreshToken)
     {

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using MecaProApi.DTOs.Auth;
 using MecaProApi.Services.Interfaces;
 using MecaProApi.Validators;
+using MecaProApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MecaProApi.Controllers;
 
@@ -11,13 +13,14 @@ namespace MecaProApi.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+private readonly IAuthService _authService;
+private readonly AppDbContext _db;
 
-    public AuthController(IAuthService authService)
-    {
-        _authService = authService;
-    }
-
+public AuthController(IAuthService authService, AppDbContext db)
+{
+    _authService = authService;
+    _db = db;
+}
     [HttpPost("register")]
     [EnableRateLimiting("auth")]
     public async Task<IActionResult> Register(RegisterDto dto)
@@ -58,4 +61,17 @@ public class AuthController : ControllerBase
         await _authService.RevokeToken(refreshToken);
         return Ok();
     }
+    [HttpGet("verify")]
+public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+{
+    var user = await _db.Users.FirstOrDefaultAsync(u => u.VerificationToken == token);
+    if (user == null)
+        return BadRequest(new { message = "Token invalide" });
+
+    user.IsVerified = true;
+    user.VerificationToken = null;
+    await _db.SaveChangesAsync();
+
+    return Ok(new { message = "Email vérifié avec succès ! Tu peux maintenant te connecter." });
+}
 }
