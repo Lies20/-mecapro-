@@ -4,6 +4,7 @@
     "axios": "^1.16.1",
     "expo-location": "^55.1.10",
     "react-native-maps": "^1.27.2",
+    "react-native-webview": "^13.16.1",
     "zustand": "^5.0.13"
   }
 }
