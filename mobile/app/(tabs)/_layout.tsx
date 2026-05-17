@@ -21,6 +21,7 @@ export default function TabLayout() {
       <Tabs.Screen name="appointments" options={{ title: 'RDV', tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>📅</Text> }} />
       <Tabs.Screen name="profile" options={{ title: 'Profil', tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>👤</Text> }} />
       <Tabs.Screen name="two" options={{ href: null }} />
+      <Tabs.Screen name="community" options={{ title: 'Communauté', tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>👥</Text> }} />
       
     </Tabs>
   )

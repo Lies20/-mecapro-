@@ -55,35 +55,42 @@ public class GarageService : IGarageService
     }
 
     public async Task<GarageDto> Create(CreateGarageDto dto)
+{
+    var garage = new Garage
     {
-        var garage = new Garage
+        Name = dto.Name,
+        Description = dto.Description,
+        Address = dto.Address,
+        City = dto.City,
+        PostalCode = dto.PostalCode,
+        Latitude = dto.Latitude,
+        Longitude = dto.Longitude,
+        Phone = dto.Phone,
+        Email = dto.Email,
+        HourlyRate = dto.HourlyRate
+    };
+
+    _db.Garages.Add(garage);
+
+    foreach (var specId in dto.SpecialtyIds)
+    {
+        _db.GarageSpecialties.Add(new GarageSpecialty
         {
-            Name = dto.Name,
-            Description = dto.Description,
-            Address = dto.Address,
-            City = dto.City,
-            PostalCode = dto.PostalCode,
-            Latitude = dto.Latitude,
-            Longitude = dto.Longitude,
-            Phone = dto.Phone,
-            Email = dto.Email,
-            HourlyRate = dto.HourlyRate
-        };
-
-        _db.Garages.Add(garage);
-
-        foreach (var specId in dto.SpecialtyIds)
-        {
-            _db.GarageSpecialties.Add(new GarageSpecialty
-            {
-                GarageId = garage.Id,
-                SpecialtyId = specId
-            });
-        }
-
-        await _db.SaveChangesAsync();
-        return ToDto(garage, null);
+            GarageId = garage.Id,
+            SpecialtyId = specId
+        });
     }
+
+    await _db.SaveChangesAsync();
+
+    // Recharge le garage avec les spécialités
+    var created = await _db.Garages
+        .Include(g => g.GarageSpecialties).ThenInclude(gs => gs.Specialty)
+        .Include(g => g.Reviews)
+        .FirstAsync(g => g.Id == garage.Id);
+
+    return ToDto(created, null);
+}
 
     public async Task<bool> ToggleAvailability(Guid id, bool isAvailable)
     {

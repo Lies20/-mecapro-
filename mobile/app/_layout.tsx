@@ -24,6 +24,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" options={{ headerShown: false }} /> 
         <Stack.Screen name="garage/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="reservation/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="create-garage" options={{ headerShown: false }} />
 
       </Stack>
     </>

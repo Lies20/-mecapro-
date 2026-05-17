@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from 'react-native'
 import { Colors2 as Colors } from '../../constants/colors'
 import api from '../../services/api'
 
@@ -42,6 +42,29 @@ export default function AppointmentsScreen() {
       weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
     })
   }
+  const cancelAppointment = async (id: string) => {
+  Alert.alert(
+    'Annuler le RDV',
+    'Tu veux vraiment annuler ce rendez-vous ?',
+    [
+      { text: 'Non', style: 'cancel' },
+      {
+        text: 'Oui, annuler',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await api.patch(`/Appointments/${id}/cancel`)
+            fetchAppointments()
+            Alert.alert('✅', 'Rendez-vous annulé')
+          } catch {
+            Alert.alert('Erreur', 'Impossible d\'annuler le RDV')
+          }
+        }
+      }
+    ]
+  )
+}
+  
 
   return (
     <View style={styles.container}>
@@ -83,8 +106,8 @@ export default function AppointmentsScreen() {
                     <TouchableOpacity style={styles.btnCall}>
                       <Text style={styles.btnCallText}>📞 Appeler</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.btnCancel}>
-                      <Text style={styles.btnCancelText}>Annuler</Text>
+                    <TouchableOpacity style={styles.btnCancel} onPress={() => cancelAppointment(a.id)}>
+                          <Text style={styles.btnCancelText}>Annuler</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

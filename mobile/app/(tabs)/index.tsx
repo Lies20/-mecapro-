@@ -41,9 +41,10 @@ export default function MapScreen() {
 
   const fetchGarages = async (lat: number, lng: number) => {
     try {
-      const res = await api.get(`/Garages/nearby?lat=${lat}&lng=${lng}&radius=10`)
+      const res = await api.get(`/Garages/nearby?lat=${lat}&lng=${lng}&radius=50`)
       setGarages(res.data)
-    } catch (e) {
+    } catch (e: any) {
+      console.log('Erreur fetchGarages:', e.message, e.response?.data)
       setGarages([
         { id: '1', name: 'Garage Auto Performance', city: 'Paris', isAvailable: true, latitude: 48.858, longitude: 2.347, averageRating: 4.8, distanceKm: 0.6, specialties: ['Révision', 'Freinage'] },
         { id: '2', name: 'Atelier Voltauto', city: 'Paris', isAvailable: true, latitude: 48.864, longitude: 2.358, averageRating: 4.7, distanceKm: 1.1, specialties: ['Électrique', 'Hybride'] },
